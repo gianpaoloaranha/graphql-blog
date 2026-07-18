@@ -12,14 +12,89 @@ import (
 	"github.com/gianpaoloaranha/graphql-blog/graph/model"
 )
 
-// CreateTodo is the resolver for the createTodo field.
-func (r *mutationResolver) CreateTodo(ctx context.Context, input model.NewTodo) (*model.Todo, error) {
-	panic(fmt.Errorf("not implemented: CreateTodo - createTodo"))
+// CreateUser is the resolver for the createUser field.
+func (r *mutationResolver) CreateUser(ctx context.Context, input model.CreateUserInput) (*model.UserPayload, error) {
+	panic(fmt.Errorf("not implemented: CreateUser - createUser"))
 }
 
-// Todos is the resolver for the todos field.
-func (r *queryResolver) Todos(ctx context.Context) ([]*model.Todo, error) {
-	panic(fmt.Errorf("not implemented: Todos - todos"))
+// UpdateUser is the resolver for the updateUser field.
+func (r *mutationResolver) UpdateUser(ctx context.Context, input model.UpdateUserInput) (*model.UserPayload, error) {
+	panic(fmt.Errorf("not implemented: UpdateUser - updateUser"))
+}
+
+// DeleteUser is the resolver for the deleteUser field.
+func (r *mutationResolver) DeleteUser(ctx context.Context, id string) (*model.DeletePayload, error) {
+	panic(fmt.Errorf("not implemented: DeleteUser - deleteUser"))
+}
+
+// FollowUser is the resolver for the followUser field.
+func (r *mutationResolver) FollowUser(ctx context.Context, input model.FollowUserInput) (*model.UserPayload, error) {
+	panic(fmt.Errorf("not implemented: FollowUser - followUser"))
+}
+
+// UnfollowUser is the resolver for the unfollowUser field.
+func (r *mutationResolver) UnfollowUser(ctx context.Context, input model.UnfollowUserInput) (*model.UserPayload, error) {
+	panic(fmt.Errorf("not implemented: UnfollowUser - unfollowUser"))
+}
+
+// CreatePost is the resolver for the createPost field.
+func (r *mutationResolver) CreatePost(ctx context.Context, input model.CreatePostInput) (*model.PostPayload, error) {
+	panic(fmt.Errorf("not implemented: CreatePost - createPost"))
+}
+
+// UpdatePost is the resolver for the updatePost field.
+func (r *mutationResolver) UpdatePost(ctx context.Context, input model.UpdatePostInput) (*model.PostPayload, error) {
+	panic(fmt.Errorf("not implemented: UpdatePost - updatePost"))
+}
+
+// DeletePost is the resolver for the deletePost field.
+func (r *mutationResolver) DeletePost(ctx context.Context, postID string) (*model.DeletePayload, error) {
+	panic(fmt.Errorf("not implemented: DeletePost - deletePost"))
+}
+
+// CreateComment is the resolver for the createComment field.
+func (r *mutationResolver) CreateComment(ctx context.Context, input model.CreateCommentInput) (*model.CommentPayload, error) {
+	panic(fmt.Errorf("not implemented: CreateComment - createComment"))
+}
+
+// UpdateComment is the resolver for the updateComment field.
+func (r *mutationResolver) UpdateComment(ctx context.Context, input model.UpdateCommentInput) (*model.CommentPayload, error) {
+	panic(fmt.Errorf("not implemented: UpdateComment - updateComment"))
+}
+
+// DeleteComment is the resolver for the deleteComment field.
+func (r *mutationResolver) DeleteComment(ctx context.Context, commentID string) (*model.DeletePayload, error) {
+	panic(fmt.Errorf("not implemented: DeleteComment - deleteComment"))
+}
+
+// User is the resolver for the user field.
+func (r *queryResolver) User(ctx context.Context, userID string) (*model.User, error) {
+	panic(fmt.Errorf("not implemented: User - user"))
+}
+
+// Users is the resolver for the users field.
+func (r *queryResolver) Users(ctx context.Context) ([]*model.User, error) {
+	panic(fmt.Errorf("not implemented: Users - users"))
+}
+
+// Post is the resolver for the post field.
+func (r *queryResolver) Post(ctx context.Context, postID string) (*model.Post, error) {
+	panic(fmt.Errorf("not implemented: Post - post"))
+}
+
+// UserPosts is the resolver for the userPosts field.
+func (r *queryResolver) UserPosts(ctx context.Context, userID string) ([]*model.Post, error) {
+	panic(fmt.Errorf("not implemented: UserPosts - userPosts"))
+}
+
+// Comment is the resolver for the comment field.
+func (r *queryResolver) Comment(ctx context.Context, commentID string) (*model.Comment, error) {
+	panic(fmt.Errorf("not implemented: Comment - comment"))
+}
+
+// PostComments is the resolver for the postComments field.
+func (r *queryResolver) PostComments(ctx context.Context, postID string) ([]*model.Comment, error) {
+	panic(fmt.Errorf("not implemented: PostComments - postComments"))
 }
 
 // Mutation returns MutationResolver implementation.
@@ -32,3 +107,18 @@ type (
 	mutationResolver struct{ *Resolver }
 	queryResolver    struct{ *Resolver }
 )
+
+// !!! WARNING !!!
+// The code below was going to be deleted when updating resolvers. It has been copied here so you have
+// one last chance to move it out of harms way if you want. There are two reasons this happens:
+//  - When renaming or deleting a resolver the old code will be put in here. You can safely delete
+//    it when you're done.
+//  - You have helper methods in this file. Move them out to keep these resolver files clean.
+/*
+	func (r *mutationResolver) CreateTodo(ctx context.Context, input model.NewTodo) (*model.Todo, error) {
+	panic(fmt.Errorf("not implemented: CreateTodo - createTodo"))
+}
+func (r *queryResolver) Todos(ctx context.Context) ([]*model.Todo, error) {
+	panic(fmt.Errorf("not implemented: Todos - todos"))
+}
+*/

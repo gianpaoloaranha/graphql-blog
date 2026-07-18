@@ -2,27 +2,157 @@
 #
 # https://gqlgen.com/getting-started/
 
-type Todo {
-  id: ID!
-  text: String!
-  done: Boolean!
-  user: User!
-}
+################
+# SCALAR TYPES #
+################
+
+scalar DateTime
+
+
+################
+# OBJECT TYPES #
+################
 
 type User {
   id: ID!
   name: String!
+  email: String!
+  following: [User!]!
+  followers: [User!]!
+  posts: [Post!]!
 }
+
+type Post {
+  id: ID!
+  description: String!
+  author: User!
+  comments: [Comment!]!
+  createdAt: DateTime!
+}
+
+type Comment {
+  id: ID!
+  message: String!
+  author: User!
+  createdAt: DateTime!
+}
+
+
+###############
+# INPUT TYPES #
+###############
+
+# --- User inputs ---
+input CreateUserInput {
+  name: String!
+  email: String!
+}
+
+input UpdateUserInput {
+  userId: ID!
+  name: String
+  email: String
+}
+
+input FollowUserInput {
+  userId: ID!
+  userToFollowId: ID!
+}
+
+input UnfollowUserInput {
+  userId: ID!
+  userToUnfollowId: ID!
+}
+
+# --- Post inputs ---
+input CreatePostInput {
+  authorId: ID!
+  description: String!
+}
+
+input UpdatePostInput {
+  postId: ID!
+  description: String!
+}
+
+# --- Comment inputs ---
+input CreateCommentInput {
+  authorId: ID!
+  postId: ID!
+  message: String!
+}
+
+input UpdateCommentInput {
+  commentId: ID!
+  message: String!
+}
+
+
+############
+# PAYLOADS #
+############
+
+type Error {
+  field: String!
+  message: String!
+}
+
+type UserPayload {
+  user: User
+  errors: [Error!]
+}
+
+type PostPayload {
+  post: Post
+  errors: [Error!]
+}
+
+type CommentPayload {
+  comment: Comment
+  errors: [Error!]
+}
+
+type DeletePayload {
+  status: Boolean!
+  errors: [Error!]
+}
+
+
+###########
+# QUERIES #
+###########
 
 type Query {
-  todos: [Todo!]!
+  user(userId: ID!): User!
+  users: [User!]!
+
+  post(postId: ID!): Post!
+  userPosts(userId: ID!): [Post!]!
+
+  comment(commentId: ID!): Comment!
+  postComments(postId: ID!): [Comment!]!
 }
 
-input NewTodo {
-  text: String!
-  userId: String!
-}
+
+#############
+# MUTATIONS #
+#############
 
 type Mutation {
-  createTodo(input: NewTodo!): Todo!
+  # --- User mutations ---
+  createUser(input: CreateUserInput!): UserPayload!
+  updateUser(input: UpdateUserInput!): UserPayload!
+  deleteUser(id: ID!): DeletePayload!
+  followUser(input: FollowUserInput!): UserPayload!
+  unfollowUser(input: UnfollowUserInput!): UserPayload!
+
+  # --- Post mutations ---
+  createPost(input: CreatePostInput!): PostPayload!
+  updatePost(input: UpdatePostInput!): PostPayload!
+  deletePost(postId: ID!): DeletePayload!
+
+  # --- Comment mutations ---
+  createComment(input: CreateCommentInput!): CommentPayload!
+  updateComment(input: UpdateCommentInput!): CommentPayload!
+  deleteComment(commentId: ID!): DeletePayload!
 }

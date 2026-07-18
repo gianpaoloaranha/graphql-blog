@@ -2,25 +2,103 @@
 
 package model
 
+import (
+	"time"
+)
+
+type Comment struct {
+	ID        string    `json:"id"`
+	Message   string    `json:"message"`
+	Author    *User     `json:"author"`
+	CreatedAt time.Time `json:"createdAt"`
+}
+
+type CommentPayload struct {
+	Comment *Comment `json:"comment,omitempty"`
+	Errors  []*Error `json:"errors,omitempty"`
+}
+
+type CreateCommentInput struct {
+	AuthorID string `json:"authorId"`
+	PostID   string `json:"postId"`
+	Message  string `json:"message"`
+}
+
+type CreatePostInput struct {
+	AuthorID    string `json:"authorId"`
+	Description string `json:"description"`
+}
+
+type CreateUserInput struct {
+	Name  string `json:"name"`
+	Email string `json:"email"`
+}
+
+type DeletePayload struct {
+	Status bool     `json:"status"`
+	Errors []*Error `json:"errors,omitempty"`
+}
+
+type Error struct {
+	Field   string `json:"field"`
+	Message string `json:"message"`
+}
+
+type FollowUserInput struct {
+	UserID         string `json:"userId"`
+	UserToFollowID string `json:"userToFollowId"`
+}
+
 type Mutation struct {
 }
 
-type NewTodo struct {
-	Text   string `json:"text"`
-	UserID string `json:"userId"`
+type Post struct {
+	ID          string     `json:"id"`
+	Description string     `json:"description"`
+	Author      *User      `json:"author"`
+	Comments    []*Comment `json:"comments"`
+	CreatedAt   time.Time  `json:"createdAt"`
+}
+
+type PostPayload struct {
+	Post   *Post    `json:"post,omitempty"`
+	Errors []*Error `json:"errors,omitempty"`
 }
 
 type Query struct {
 }
 
-type Todo struct {
-	ID   string `json:"id"`
-	Text string `json:"text"`
-	Done bool   `json:"done"`
-	User *User  `json:"user"`
+type UnfollowUserInput struct {
+	UserID           string `json:"userId"`
+	UserToUnfollowID string `json:"userToUnfollowId"`
+}
+
+type UpdateCommentInput struct {
+	CommentID string `json:"commentId"`
+	Message   string `json:"message"`
+}
+
+type UpdatePostInput struct {
+	PostID      string `json:"postId"`
+	Description string `json:"description"`
+}
+
+type UpdateUserInput struct {
+	UserID string  `json:"userId"`
+	Name   *string `json:"name,omitempty"`
+	Email  *string `json:"email,omitempty"`
 }
 
 type User struct {
-	ID   string `json:"id"`
-	Name string `json:"name"`
+	ID        string  `json:"id"`
+	Name      string  `json:"name"`
+	Email     string  `json:"email"`
+	Following []*User `json:"following"`
+	Followers []*User `json:"followers"`
+	Posts     []*Post `json:"posts"`
+}
+
+type UserPayload struct {
+	User   *User    `json:"user,omitempty"`
+	Errors []*Error `json:"errors,omitempty"`
 }
