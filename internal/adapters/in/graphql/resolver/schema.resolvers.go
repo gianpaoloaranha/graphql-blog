@@ -1,4 +1,4 @@
-package graph
+package resolver
 
 // This file will be automatically regenerated based on the schema, any resolver
 // implementations
@@ -9,7 +9,8 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/gianpaoloaranha/go-social-network/internal/interface/graph/model"
+	"github.com/gianpaoloaranha/go-social-network/internal/adapters/in/graphql/generated"
+	"github.com/gianpaoloaranha/go-social-network/internal/adapters/in/graphql/generated/model"
 )
 
 // CreateUser is the resolver for the createUser field.
@@ -98,10 +99,10 @@ func (r *queryResolver) PostComments(ctx context.Context, postID string) ([]*mod
 }
 
 // Mutation returns MutationResolver implementation.
-func (r *Resolver) Mutation() MutationResolver { return &mutationResolver{r} }
+func (r *Resolver) Mutation() generated.MutationResolver { return &mutationResolver{r} }
 
 // Query returns QueryResolver implementation.
-func (r *Resolver) Query() QueryResolver { return &queryResolver{r} }
+func (r *Resolver) Query() generated.QueryResolver { return &queryResolver{r} }
 
 type (
 	mutationResolver struct{ *Resolver }
