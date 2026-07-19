@@ -15,7 +15,7 @@ import (
 
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/99designs/gqlgen/graphql/introspection"
-	"github.com/gianpaoloaranha/graphql-blog/internal/interface/graph/model"
+	"github.com/gianpaoloaranha/go-social-network/internal/interface/graph/model"
 	gqlparser "github.com/vektah/gqlparser/v2"
 	"github.com/vektah/gqlparser/v2/ast"
 )

@@ -1,4 +1,4 @@
-module github.com/gianpaoloaranha/graphql-blog
+module github.com/gianpaoloaranha/go-social-network
 
 go 1.25.0
 

@@ -9,7 +9,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/gianpaoloaranha/graphql-blog/internal/interface/graph/model"
+	"github.com/gianpaoloaranha/go-social-network/internal/interface/graph/model"
 )
 
 // CreateUser is the resolver for the createUser field.
