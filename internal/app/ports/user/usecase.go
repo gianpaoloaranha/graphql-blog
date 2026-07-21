@@ -1,0 +1,27 @@
+package user
+
+import "github.com/gianpaoloaranha/go-social-network/internal/app/domain"
+
+type CreateUserInput struct {
+	Name  string
+	Email string
+}
+
+type UpdateUserInput struct {
+	ID    string
+	Name  *string
+	Email *string
+}
+
+type UseCase interface {
+	CreateUser(user CreateUserInput) error
+	GetUsers() (*[]domain.User, error)
+	GetUserByID(id string) (*domain.User, error)
+	UpdateUser(user UpdateUserInput) error
+	DeleteUser(id string) error
+
+	FollowUser(followerID, followeeID string) error
+	UnfollowUser(followerID, followeeID string) error
+	GetFollowers(userID string) (*[]domain.User, error)
+	GetFollowing(userID string) (*[]domain.User, error)
+}
