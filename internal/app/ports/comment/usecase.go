@@ -14,9 +14,9 @@ type UpdateCommentInput struct {
 }
 
 type UseCase interface {
-	CreateComment(comment CreateCommentInput) error
+	CreateComment(comment CreateCommentInput) (*domain.Comment, error)
 	GetCommentByID(id string) (*domain.Comment, error)
-	GetCommentsByPostID(postID string) (*[]domain.Comment, error)
-	UpdateComment(comment UpdateCommentInput) error
+	GetCommentsByPostID(postID string) ([]domain.Comment, error)
+	UpdateComment(comment UpdateCommentInput) (*domain.Comment, error)
 	DeleteComment(id string) error
 }

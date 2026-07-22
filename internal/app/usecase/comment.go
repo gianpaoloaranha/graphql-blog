@@ -15,11 +15,11 @@ func NewCommentUsecase(commentRepository comment.Repository) comment.UseCase {
 	}
 }
 
-func (uc *commentUsecase) CreateComment(comment comment.CreateCommentInput) error {
+func (uc *commentUsecase) CreateComment(comment comment.CreateCommentInput) (*domain.Comment, error) {
 	panic("implement me")
 }
 
-func (uc *commentUsecase) GetCommentsByPostID(postID string) (*[]domain.Comment, error) {
+func (uc *commentUsecase) GetCommentsByPostID(postID string) ([]domain.Comment, error) {
 	panic("implement me")
 }
 
@@ -27,7 +27,7 @@ func (uc *commentUsecase) GetCommentByID(id string) (*domain.Comment, error) {
 	panic("implement me")
 }
 
-func (uc *commentUsecase) UpdateComment(comment comment.UpdateCommentInput) error {
+func (uc *commentUsecase) UpdateComment(comment comment.UpdateCommentInput) (*domain.Comment, error) {
 	panic("implement me")
 }
 

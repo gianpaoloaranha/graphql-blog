@@ -15,11 +15,11 @@ func NewPostUsecase(postRepository post.Repository) post.UseCase {
 	}
 }
 
-func (uc *postUsecase) CreatePost(post post.CreatePostInput) error {
+func (uc *postUsecase) CreatePost(post post.CreatePostInput) (*domain.Post, error) {
 	panic("implement me")
 }
 
-func (uc *postUsecase) GetPosts() (*[]domain.Post, error) {
+func (uc *postUsecase) GetPosts() ([]domain.Post, error) {
 	panic("implement me")
 }
 
@@ -27,7 +27,7 @@ func (uc *postUsecase) GetPostByID(id string) (*domain.Post, error) {
 	panic("implement me")
 }
 
-func (uc *postUsecase) UpdatePost(post post.UpdatePostInput) error {
+func (uc *postUsecase) UpdatePost(post post.UpdatePostInput) (*domain.Post, error) {
 	panic("implement me")
 }
 

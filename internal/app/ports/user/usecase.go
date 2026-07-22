@@ -14,14 +14,14 @@ type UpdateUserInput struct {
 }
 
 type UseCase interface {
-	CreateUser(user CreateUserInput) error
-	GetUsers() (*[]domain.User, error)
+	CreateUser(user CreateUserInput) (*domain.User, error)
+	GetUsers() ([]domain.User, error)
 	GetUserByID(id string) (*domain.User, error)
-	UpdateUser(user UpdateUserInput) error
+	UpdateUser(user UpdateUserInput) (*domain.User, error)
 	DeleteUser(id string) error
 
 	FollowUser(followerID, followeeID string) error
 	UnfollowUser(followerID, followeeID string) error
-	GetFollowers(userID string) (*[]domain.User, error)
-	GetFollowing(userID string) (*[]domain.User, error)
+	GetFollowers(userID string) ([]domain.User, error)
+	GetFollowing(userID string) ([]domain.User, error)
 }
