@@ -54,6 +54,10 @@ func (uc *userUsecase) GetUsers() ([]domain.User, error) {
 
 // GetUserByID retrieves a user by their ID.
 func (uc *userUsecase) GetUserByID(id string) (*domain.User, error) {
+	if id == "" {
+		return nil, domain.NewError(domain.ErrInvalidInput, "User ID is required")
+	}
+
 	user, err := uc.userRepository.GetUserByID(id)
 	if err != nil {
 		return nil, domain.WrapError(domain.ErrInternal, "Could not retrieve user", err)
@@ -67,8 +71,24 @@ func (uc *userUsecase) GetUserByID(id string) (*domain.User, error) {
 }
 
 // UpdateUser updates an existing user's information.
-func (uc *userUsecase) UpdateUser(user user.UpdateUserInput) (*domain.User, error) {
-	userToUpdate, err := uc.userRepository.GetUserByID(user.ID)
+func (uc *userUsecase) UpdateUser(input user.UpdateUserInput) (*domain.User, error) {
+	if input.ID == "" {
+		return nil, domain.NewError(domain.ErrInvalidInput, "User ID is required")
+	}
+
+	if input.Name == nil && input.Email == nil {
+		return nil, domain.NewError(domain.ErrInvalidInput, "At least one field is required")
+	}
+
+	if input.Name != nil && *input.Name == "" {
+		return nil, domain.NewError(domain.ErrInvalidInput, "Name is required")
+	}
+
+	if input.Email != nil && *input.Email == "" {
+		return nil, domain.NewError(domain.ErrInvalidInput, "Email is required")
+	}
+
+	userToUpdate, err := uc.userRepository.GetUserByID(input.ID)
 	if err != nil {
 		return nil, domain.WrapError(domain.ErrInternal, "Could not retrieve user", err)
 	}
@@ -77,31 +97,39 @@ func (uc *userUsecase) UpdateUser(user user.UpdateUserInput) (*domain.User, erro
 		return nil, domain.NewError(domain.ErrNotFound, "User not found")
 	}
 
-	if user.Name != nil {
-		userToUpdate.Name = *user.Name
+	if input.Name != nil {
+		userToUpdate.Name = *input.Name
 	}
 
-	if user.Email != nil {
-		if _, err := mail.ParseAddress(*user.Email); err != nil {
+	if input.Email != nil {
+		if _, err := mail.ParseAddress(*input.Email); err != nil {
 			return nil, domain.NewError(domain.ErrInvalidInput, "Invalid email format")
 		}
 
-		userToUpdate.Email = *user.Email
+		userToUpdate.Email = *input.Email
 	}
 
 	updatedUser, err := uc.userRepository.UpdateUser(userToUpdate)
 	if err != nil {
 		return nil, domain.WrapError(domain.ErrInternal, "Could not update user", err)
 	}
-	
+
 	return updatedUser, nil
 }
 
 // DeleteUser deletes a user from the system by their ID.
 func (uc *userUsecase) DeleteUser(id string) error {
-	_, err := uc.userRepository.GetUserByID(id)
+	if id == "" {
+		return domain.NewError(domain.ErrInvalidInput, "User ID is required")
+	}
+
+	user, err := uc.userRepository.GetUserByID(id)
 	if err != nil {
 		return domain.WrapError(domain.ErrInternal, "Could not retrieve user", err)
+	}
+
+	if user == nil {
+		return domain.NewError(domain.ErrNotFound, "User not found")
 	}
 
 	err = uc.userRepository.DeleteUser(id)
@@ -114,14 +142,34 @@ func (uc *userUsecase) DeleteUser(id string) error {
 
 // FollowUser allows a user to follow another user.
 func (uc *userUsecase) FollowUser(followerID, followeeID string) error {
-	_, err := uc.userRepository.GetUserByID(followerID)
-	if err != nil {
-		return domain.WrapError(domain.ErrInternal, "Could not retrieve user", err)
+	if followerID == "" {
+		return domain.NewError(domain.ErrInvalidInput, "Follower ID is required")
 	}
 
-	_, err = uc.userRepository.GetUserByID(followeeID)
+	if followeeID == "" {
+		return domain.NewError(domain.ErrInvalidInput, "Followee ID is required")
+	}
+
+	if followerID == followeeID {
+		return domain.NewError(domain.ErrInvalidInput, "User cannot follow themselves")
+	}
+
+	follower, err := uc.userRepository.GetUserByID(followerID)
 	if err != nil {
-		return domain.WrapError(domain.ErrInternal, "Could not retrieve user", err)
+		return domain.WrapError(domain.ErrInternal, "Could not retrieve follower", err)
+	}
+
+	if follower == nil {
+		return domain.NewError(domain.ErrNotFound, "Follower not found")
+	}
+
+	followee, err := uc.userRepository.GetUserByID(followeeID)
+	if err != nil {
+		return domain.WrapError(domain.ErrInternal, "Could not retrieve followee", err)
+	}
+
+	if followee == nil {
+		return domain.NewError(domain.ErrNotFound, "Followee not found")
 	}
 
 	err = uc.userRepository.FollowUser(followerID, followeeID)
@@ -134,19 +182,39 @@ func (uc *userUsecase) FollowUser(followerID, followeeID string) error {
 
 // UnfollowUser allows a user to unfollow another user.
 func (uc *userUsecase) UnfollowUser(followerID, followeeID string) error {
-	_, err := uc.userRepository.GetUserByID(followerID)
-	if err != nil {
-		return domain.WrapError(domain.ErrInternal, "Could not retrieve user", err)
+	if followerID == "" {
+		return domain.NewError(domain.ErrInvalidInput, "Follower ID is required")
 	}
 
-	_, err = uc.userRepository.GetUserByID(followeeID)
+	if followeeID == "" {
+		return domain.NewError(domain.ErrInvalidInput, "Followee ID is required")
+	}
+
+	if followerID == followeeID {
+		return domain.NewError(domain.ErrInvalidInput, "User cannot unfollow themselves")
+	}
+
+	follower, err := uc.userRepository.GetUserByID(followerID)
 	if err != nil {
-		return domain.WrapError(domain.ErrInternal, "Could not retrieve user", err)
+		return domain.WrapError(domain.ErrInternal, "Could not retrieve follower", err)
+	}
+
+	if follower == nil {
+		return domain.NewError(domain.ErrNotFound, "Follower not found")
+	}
+
+	followee, err := uc.userRepository.GetUserByID(followeeID)
+	if err != nil {
+		return domain.WrapError(domain.ErrInternal, "Could not retrieve followee", err)
+	}
+
+	if followee == nil {
+		return domain.NewError(domain.ErrNotFound, "Followee not found")
 	}
 
 	err = uc.userRepository.UnfollowUser(followerID, followeeID)
 	if err != nil {
-		return domain.WrapError(domain.ErrInternal, "Could not follow user", err)
+		return domain.WrapError(domain.ErrInternal, "Could not unfollow user", err)
 	}
 
 	return nil
@@ -154,9 +222,17 @@ func (uc *userUsecase) UnfollowUser(followerID, followeeID string) error {
 
 // GetFollowers retrieves the list of followers for a given user.
 func (uc *userUsecase) GetFollowers(userID string) ([]domain.User, error) {
-	_, err := uc.userRepository.GetUserByID(userID)
+	if userID == "" {
+		return nil, domain.NewError(domain.ErrInvalidInput, "User ID is required")
+	}
+
+	user, err := uc.userRepository.GetUserByID(userID)
 	if err != nil {
 		return nil, domain.WrapError(domain.ErrInternal, "Could not retrieve user", err)
+	}
+
+	if user == nil {
+		return nil, domain.NewError(domain.ErrNotFound, "User not found")
 	}
 
 	followers, err := uc.userRepository.GetFollowers(userID)
@@ -169,14 +245,22 @@ func (uc *userUsecase) GetFollowers(userID string) ([]domain.User, error) {
 
 // GetFollowing retrieves the list of users that a given user is following.
 func (uc *userUsecase) GetFollowing(userID string) ([]domain.User, error) {
-	_, err := uc.userRepository.GetUserByID(userID)
+	if userID == "" {
+		return nil, domain.NewError(domain.ErrInvalidInput, "User ID is required")
+	}
+
+	user, err := uc.userRepository.GetUserByID(userID)
 	if err != nil {
 		return nil, domain.WrapError(domain.ErrInternal, "Could not retrieve user", err)
 	}
 
+	if user == nil {
+		return nil, domain.NewError(domain.ErrNotFound, "User not found")
+	}
+
 	following, err := uc.userRepository.GetFollowing(userID)
 	if err != nil {
-		return nil, domain.WrapError(domain.ErrInternal, "Could not retrieve followers", err)
+		return nil, domain.WrapError(domain.ErrInternal, "Could not retrieve following", err)
 	}
 
 	return following, nil
